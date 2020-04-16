@@ -1,9 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:invest123/app/home/models/user.dart';
 import 'package:invest123/app/sign_in/validators.dart';
 import 'package:invest123/common_widgets/form_submit_button.dart';
 import 'package:invest123/common_widgets/platform_alert_dialog.dart';
 import 'package:invest123/services/auth.dart';
+import 'package:invest123/services/database.dart';
 import 'package:provider/provider.dart';
 
 ///

@@ -5,8 +5,6 @@ class DetailDataPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Record record = ModalRoute.of(context).settings.arguments;
-
-    // Use the Todo to create the UI.
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Page'),

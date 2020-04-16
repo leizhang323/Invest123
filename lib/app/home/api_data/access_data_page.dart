@@ -36,6 +36,9 @@ class _AccessDataPageState extends State<AccessDataPage> {
       body: StreamBuilder(
         stream: apiManager.apiListView,
         builder: (BuildContext context, AsyncSnapshot<List<Record>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator(),);
+          }
           List<Record> records = snapshot.data;
           return ListView.separated(
               itemBuilder: (BuildContext context, int index) {

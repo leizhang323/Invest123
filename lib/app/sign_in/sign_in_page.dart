@@ -27,14 +27,6 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-//  Future<void> _signInWithFacebook() async {
-//    try {
-//      await auth.signInWithFacebook();
-//    } catch (e) {
-//      print(e.toString());
-//    }
-//  }
-
   void _signInWithEmail(BuildContext context) {
     // Navigation to certain page
     Navigator.of(context).push(
@@ -97,23 +89,13 @@ class SignInPage extends StatelessWidget {
             color: Colors.white,
             onPressed: () => _signInWithGoogle(context),
           ),
-// some issue with facebook login, delete this part
-
-//          SizedBox(height: 15.0),
-//          SocialSignInButton(
-//            text: 'Sign in with Facebook',
-//            assertName: 'images/facebook-logo.png',
-//            textColor: Colors.white,
-//            color: Color(0xFF334D92),
-//            onPressed: _signInWithFacebook,
-//          ),
           SizedBox(height: 15.0),
-          SignInButton(
-            text: 'Sign in anonymously',
-            textColor: Colors.white,
-            color: Colors.deepPurple,
-            onPressed: () => _signInAnonymously(context),
-          ),
+//          SignInButton(
+//            text: 'Sign in anonymously',
+//            textColor: Colors.white,
+//            color: Colors.deepPurple,
+//            onPressed: () => _signInAnonymously(context),
+//          ),
         ],
       ),
     );

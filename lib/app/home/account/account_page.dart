@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:invest123/app/home/models/user.dart';
+import 'package:invest123/app/home/account/create_update_info_page.dart';
 import 'package:invest123/common_widgets/avatar.dart';
+import 'package:invest123/common_widgets/form_submit_button.dart';
 import 'package:invest123/common_widgets/platform_alert_dialog.dart';
 import 'package:invest123/services/auth.dart';
 import 'package:invest123/services/database.dart';
-import 'package:invest123/services/database_api_path.dart';
 import 'package:provider/provider.dart';
 
 class AccountPage extends StatelessWidget {
-  Future<void> _signOut(BuildContext context) async {
+
+
+    Future<void> _signOut(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context);
       await auth.signOut();
@@ -31,24 +32,14 @@ class AccountPage extends StatelessWidget {
     }
   }
 
-  Future<void> _createUser(BuildContext context) async {
-    try {
-      final database = Provider.of<Database>(context);
-      await database.createUser(DataUser(firstname: "Lei", lastname: "Zhang"));
-    } on PlatformException catch (e) {
-      PlatformAlertDialog(
-          content: e.toString(),
-          title: "Operation failed",
-          defaultActionText: null);
-    }
-  }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     // use sync instead async
     final database = Provider.of<Database>(context);
     //final dataUser = database.readUser();
     final user = Provider.of<User>(context);
+    database.checkExist(user.uid);
     return Scaffold(
       appBar: AppBar(
         title: Text('Account'),
@@ -70,12 +61,6 @@ class AccountPage extends StatelessWidget {
         ),
       ),
       body: _buildContent(context),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.account_circle),
-        onPressed: () => _createUser(context),
-        backgroundColor: Colors.indigo,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 
@@ -102,97 +87,103 @@ class AccountPage extends StatelessWidget {
       ],
     );
   }
-
-  Widget _buildContent(BuildContext context) {
-    //final database = Provider.of<Database>(context);
-    //Auth auth = Provider<>.of(context);
-    final user = Provider.of<User>(context);
-    return StreamBuilder(
-        stream: Firestore.instance
-            .collection('users').document(user.uid).
-            snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return new Text("Loading");
-          }
-          var userDocument = snapshot.data;
-          if(snapshot.data == null) {
-            return Text("null");
-          }
-            return ListView(
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    "First Name",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    userDocument["first_name"] == null ? "" : userDocument["first_name"],
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    "Last Name",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    userDocument["last_name"] == null
-                        ? ""
-                        : userDocument["last_name"],
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    "Phone Number",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    userDocument["phone_number"] == null
-                        ? ""
-                        : userDocument["phone_number"],
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    "Email Address",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    userDocument["email_address"] == null
-                        ? ""
-                        : userDocument["email_address"],
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            );
-        });
   }
-}
+
+
+   Widget _buildContent(BuildContext context) {
+    final database = Provider.of<Database>(context);
+    final user = Provider.of<User>(context);
+      return StreamBuilder (
+          stream: Firestore.instance
+              .collection('users').document(user.uid).
+          snapshots(),
+          builder: (context, snapshot) {
+           var userDocument = snapshot.data;
+            if(snapshot.data == null) return Center(child: CircularProgressIndicator(),);
+           return FutureBuilder(
+             future: database.checkExist(user.uid),
+             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+               return Column(
+                 children: <Widget>[
+                   ListTile(
+                     title: Text(
+                       "First Name",
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                     subtitle: Text(
+                       userDocument["first_name"] == null ? "null" : userDocument["first_name"],
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                   ),
+                   ListTile(
+                     title: Text(
+                       "Last Name",
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                     subtitle: Text(
+                       userDocument["last_name"] == null ? "null" : userDocument["last_name"],
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                   ),
+                   ListTile(
+                     title: Text(
+                       "Phone Number",
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                     subtitle: Text(
+                       userDocument["phone_number"] == null ? "null" : userDocument["phone_number"],
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                   ),
+                   ListTile(
+                     title: Text(
+                       "Email Address",
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                     subtitle: Text(
+                       userDocument["email_address"] == null ? "null" : userDocument["email_address"],
+                       style: TextStyle(
+                         fontSize: 20,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                   ),
+                   SizedBox(height: 50),
+                   FormSubmitButton(
+                     text: 'Create or Update User Info',
+                     onPressed: () {
+                       Navigator.push(
+                         context,
+                         MaterialPageRoute(
+                             builder: (context) => CreateUpdateInfoPage(),
+                         ),
+                       );
+                     },
+                   ),
+                 ],
+               );
+             },
+           );
+          });
+    }

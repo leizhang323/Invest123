@@ -83,10 +83,12 @@ class _CreateUpdateFormState extends State<CreateUpdateForm> {
   }
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: _buildChildren(),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: _buildChildren(),
+      ),
     );
   }
 }

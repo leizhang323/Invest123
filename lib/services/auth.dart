@@ -21,6 +21,7 @@ abstract class AuthBase {
   Future<User> createUserWithEmailAndPassword(String email, String password);
   Future<User> signInWithGoogle();
   Future<User> signInWithFacebook();
+  Future<User> signInWithPhone(AuthCredential credential);
   Future<void> signOut();
 }
 
@@ -119,6 +120,14 @@ class Auth implements AuthBase {
       );
     }
   }
+
+
+  Future<User> signInWithPhone(AuthCredential credential) async {
+    final authResult = await _firebaseAuth.signInWithCredential(credential);
+    return _userFromFirebase(authResult.user);
+  }
+
+
 
   @override
   Future<void> signOut() async {

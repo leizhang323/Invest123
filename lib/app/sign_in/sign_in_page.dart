@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:invest123/app/sign_in/email_sign_in_page.dart';
+import 'package:invest123/app/sign_in/phone_sign_in_page.dart';
 import 'package:invest123/app/sign_in/sign_in_button.dart';
 import 'package:invest123/app/sign_in/social_sign_in_button.dart';
 import 'package:invest123/services/auth.dart';
@@ -36,6 +37,17 @@ class SignInPage extends StatelessWidget {
       ),
     );
   }
+
+  void _signInWithPhone(BuildContext context) {
+    // Navigation to certain page
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => PhoneSignInPage(),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,12 +102,12 @@ class SignInPage extends StatelessWidget {
             onPressed: () => _signInWithGoogle(context),
           ),
           SizedBox(height: 15.0),
-//          SignInButton(
-//            text: 'Sign in anonymously',
-//            textColor: Colors.white,
-//            color: Colors.deepPurple,
-//            onPressed: () => _signInAnonymously(context),
-//          ),
+          SignInButton(
+            text: 'Sign in with Phone',
+            textColor: Colors.white,
+            color: Colors.deepPurple,
+            onPressed: () => _signInWithPhone(context),
+          ),
         ],
       ),
     );
